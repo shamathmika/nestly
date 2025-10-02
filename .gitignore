@@ -1,0 +1,28 @@
+# macOS system files
+.DS_Store
+
+# Node modules (React)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Log files
+*.log
+
+# Local environment configs
+.env
+.env.local
+
+# Vite cache
+frontend/.vite/
+
+# OS trash
+.Trashes
+
+# Ignore temporary PHP files
+*.bak
+*.tmp
+
+# Ignore backups from editors
+*~
+*.swp
