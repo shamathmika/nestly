@@ -1,14 +1,10 @@
 <?php
 $contactsFile = __DIR__ . "/data/contacts.txt";
+require_once __DIR__ . '/cors.php';
 
 // Set header to return JSON
 header('Content-Type: application/json');
-// Allow access from any origin for local dev
-if ($_SERVER['SERVER_NAME'] === 'localhost') {
-    header("Access-Control-Allow-Origin: *");
-} else {
-    header("Access-Control-Allow-Origin: https://shamathmikacmpe272.app");
-}
+
 
 $contacts = [];
 if (file_exists($contactsFile)) {

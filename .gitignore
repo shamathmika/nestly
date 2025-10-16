@@ -1,5 +1,6 @@
 # macOS system files
 .DS_Store
+backend/.DS_Store
 
 # Node modules (React)
 frontend/node_modules/

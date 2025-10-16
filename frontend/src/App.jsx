@@ -6,6 +6,7 @@ import About from "./components/About";
 import Services from "./components/Services";
 import News from "./components/News";
 import Contacts from "./components/Contacts";
+import Admin from "./components/Admin";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                     <Route path="/services" element={<Services />} />
                     <Route path="/news" element={<News />} />
                     <Route path="/contacts" element={<Contacts />} />
+                    <Route path="/admin" element={<Admin />} />
                 </Routes>
             </div>
         </div>
