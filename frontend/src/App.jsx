@@ -7,6 +7,7 @@ import Services from "./components/Services";
 import News from "./components/News";
 import Contacts from "./components/Contacts";
 import Admin from "./components/Admin";
+import ServiceDetail from "./components/ServiceDetail";
 
 function App() {
     return (
@@ -21,6 +22,8 @@ function App() {
                     <Route path="/news" element={<News />} />
                     <Route path="/contacts" element={<Contacts />} />
                     <Route path="/admin" element={<Admin />} />
+                    <Route path="/services" element={<Services />} />
+                    <Route path="/services/:id" element={<ServiceDetail />} />
                 </Routes>
             </div>
         </div>
