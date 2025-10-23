@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
+const apiBase = import.meta.env.VITE_API_BASE ?? "/backend";
 
 function Admin() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);

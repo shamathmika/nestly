@@ -4,7 +4,7 @@ function Contacts() {
     const [contacts, setContacts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const apiBase = import.meta.env.VITE_API_BASE || "/api";
+    const apiBase = import.meta.env.VITE_API_BASE || "/backend";
 
     useEffect(() => {
         fetch(`${apiBase}/get-contacts.php`)
