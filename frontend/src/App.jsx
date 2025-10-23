@@ -8,6 +8,8 @@ import News from "./components/News";
 import Contacts from "./components/Contacts";
 import Admin from "./components/Admin";
 import ServiceDetail from "./components/ServiceDetail";
+import RecentServices from "./components/RecentServices";
+import TopServices from "./components/TopServices";
 
 function App() {
     return (
@@ -24,6 +26,11 @@ function App() {
                     <Route path="/admin" element={<Admin />} />
                     <Route path="/services" element={<Services />} />
                     <Route path="/services/:id" element={<ServiceDetail />} />
+                    <Route
+                        path="/services/recent"
+                        element={<RecentServices />}
+                    />
+                    <Route path="/services/top" element={<TopServices />} />
                 </Routes>
             </div>
         </div>
