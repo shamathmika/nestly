@@ -10,6 +10,7 @@ import Admin from "./components/Admin";
 import ServiceDetail from "./components/ServiceDetail";
 import RecentServices from "./components/RecentServices";
 import TopServices from "./components/TopServices";
+import AllUsers from "./components/AllUsers";
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                         element={<RecentServices />}
                     />
                     <Route path="/services/top" element={<TopServices />} />
+                    <Route path="/allusers" element={<AllUsers />} />
                 </Routes>
             </div>
         </div>

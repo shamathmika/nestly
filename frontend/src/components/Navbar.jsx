@@ -6,7 +6,8 @@ function Navbar() {
             <Link to="/">Home</Link> | <Link to="/about">About</Link> |{" "}
             <Link to="/services">Services</Link> | <Link to="/news">News</Link>{" "}
             | <Link to="/contacts">Contacts</Link> |{" "}
-            <Link to="/admin">Admin</Link>{" "}
+            <Link to="/allusers">All Users</Link> |{" "}
+            <Link to="/admin">Admin</Link>
         </nav>
     );
 }
