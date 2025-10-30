@@ -1,6 +1,12 @@
 <?php
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-$allowedOrigins = ['localhost', '127.0.0.1', 'shamathmikacmpe272.app'];
+$allowedOrigins = $allowedOrigins = [
+  'localhost',
+  '127.0.0.1',
+  'shamathmikacmpe272.app',
+  'wendynttn.com',
+  'teammateB.app'
+];
 
 $isAllowed = false;
 foreach ($allowedOrigins as $allowed) {
