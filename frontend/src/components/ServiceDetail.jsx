@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-const apiBase = import.meta.env.VITE_API_BASE ?? "/backend";
+const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
 
 export default function ServiceDetail() {
     const { id } = useParams();

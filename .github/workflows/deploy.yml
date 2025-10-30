@@ -44,9 +44,9 @@ jobs:
                     sudo rm -rf /var/www/html/*
                     sudo cp -r dist/* /var/www/html/
 
-                    echo "📦  Deploying backend to /var/www/html/backend ..."
-                    sudo mkdir -p /var/www/html/backend
-                    sudo cp -r ../backend/* /var/www/html/backend/
+                    echo "📦  Deploying backend to /var/www/html/api ..."
+                    sudo mkdir -p /var/www/html/api
+                    sudo cp -r ../api/* /var/www/html/api/
 
                     echo "🔐  Setting permissions ..."
                     sudo chown -R apache:apache /var/www/html

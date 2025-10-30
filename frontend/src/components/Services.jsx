@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-const apiBase = import.meta.env.VITE_API_BASE ?? "/backend";
+const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
 
 export default function Services() {
     const [listings, setListings] = useState([]);
