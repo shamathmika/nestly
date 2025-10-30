@@ -5,14 +5,22 @@ header('Content-Type: application/json');
 
 try {
     $stmt = $pdo->query("SELECT name FROM users");
-    $names = [];
+    $users = [];
     while ($row = $stmt->fetch()) {
-        $names[] = $row['name'];
+        $users[] = $row['name'];
     }
 
-    echo json_encode($names);
+    $response = [
+        "company" => "Nestly",
+        "users" => $users
+    ];
+
+    echo json_encode($response, JSON_PRETTY_PRINT);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Query failed']);
+    echo json_encode([
+        'error' => 'Query failed',
+        'details' => $e->getMessage()
+    ]);
     exit;
 }
