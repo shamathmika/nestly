@@ -18,7 +18,7 @@ try {
 $partnerUrls = [
     // Wendy (Whisk)
     'https://wendynttn.com/api/users.php',
-    // Anandita (example placeholder)
+    // Anandita (placeholder)
     // 'https://anandita.app/api/company/get-users.php',
 ];
 

@@ -40,12 +40,27 @@ jobs:
                     npm install
                     npm run build
 
-                    echo "🚀  Deploying frontend..."
-                    # remove everything except .env
-                    sudo find /var/www/html -mindepth 1 ! -name '.env' -exec rm -rf {} +
+                    echo "🚀  Deploying frontend (preserving .env and .htaccess)..."
+                    # keep .env and .htaccess safe
+                    sudo find /var/www/html -mindepth 1 ! -name '.env' ! -name '.htaccess' -exec rm -rf {} +
 
                     # copy new frontend build
                     sudo cp -r dist/* /var/www/html/
+
+                    # ensure .htaccess exists for React routing
+                    if [ ! -f /var/www/html/.htaccess ]; then
+                      sudo tee /var/www/html/.htaccess > /dev/null <<'EOT'
+                        # React SPA rewrite rules
+                        <IfModule mod_rewrite.c>
+                          RewriteEngine On
+                          RewriteBase /
+                          RewriteCond %{REQUEST_FILENAME} -f [OR]
+                          RewriteCond %{REQUEST_FILENAME} -d
+                          RewriteRule ^ - [L]
+                          RewriteRule ^ index.html [L]
+                        </IfModule>
+                        EOT
+                    fi
 
                     echo "📦  Deploying backend (repo's /backend → server /api)..."
                     sudo mkdir -p /var/www/html/api

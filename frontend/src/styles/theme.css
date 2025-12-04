@@ -1,0 +1,62 @@
+:root {
+  /* Base brand colors (from you) */
+  --nestly-olive: #706D54;   /* deep olive/charcoal */
+  --nestly-sand:  #A08963;   /* warm sand */
+  --nestly-tan:   #C9B194;   /* light tan */
+  --nestly-mist:  #DBDBDB;   /* soft gray */
+
+  /* Semantic tokens */
+  --color-bg:            #FFFCF7;      
+  --color-surface:       #FFFFFF;      
+  --color-text:          #1F1F1F;      
+  --color-text-muted:    #5F5F5F;      
+
+  --color-brand:         var(--nestly-olive);
+  --color-brand-contrast:#FFFFFF;
+
+  --color-accent:        var(--nestly-sand);
+  --color-accent-weak:   var(--nestly-tan);
+
+  --color-border:        #E8E6E1;
+  --color-divider:       var(--nestly-mist);
+  --shadow-soft:         0 6px 24px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.04);
+  --radius-lg:           16px;
+  --radius-md:           12px;
+  --radius-sm:           8px;
+
+
+  --btn-bg:              var(--color-brand);
+  --btn-fg:              var(--color-brand-contrast);
+  --btn-bg-hover:        #5E5B46;      
+  --link:                var(--color-brand);
+  --link-hover:          #8E7B59;      
+}
+
+/* Light global scaffolding */
+html, body {
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+.nestly-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.nestly-button {
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+}
+.nestly-button:hover { background: var(--btn-bg-hover); }
+
+.nestly-link {
+  color: var(--link);
+  text-decoration: none;
+}
+.nestly-link:hover { color: var(--link-hover); text-decoration: underline; }
