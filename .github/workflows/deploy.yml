@@ -41,14 +41,13 @@ jobs:
             npm run build
 
             echo "🚀  Deploying frontend..."
-            # keep any .env in /var/www/html, wipe the rest
+            # remove everything except .env
             sudo find /var/www/html -mindepth 1 ! -name '.env' -exec rm -rf {} +
 
             # copy new frontend build
             sudo cp -r dist/* /var/www/html/
 
-            echo "📦  Deploying backend..."
-            sudo rm -rf /var/www/html/api
+            echo "📦  Deploying backend (repo's /backend → server /api)..."
             sudo mkdir -p /var/www/html/api
             sudo cp -r ../backend/* /var/www/html/api/
 
