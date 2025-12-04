@@ -40,33 +40,21 @@ jobs:
             npm install
             npm run build
 
-            echo "🚀  Deploying frontend (preserving .env and .htaccess)..."
-            # keep .env and .htaccess safe
-            sudo find /var/www/html -mindepth 1 ! -name '.env' ! -name '.htaccess' -exec rm -rf {} +
+            echo "🚀  Deploying frontend..."
+            # keep any .env in /var/www/html, wipe the rest
+            sudo find /var/www/html -mindepth 1 ! -name '.env' -exec rm -rf {} +
 
             # copy new frontend build
             sudo cp -r dist/* /var/www/html/
 
-            echo "📦  Deploying backend (repo's /backend → server /api)..."
+            echo "📦  Deploying backend..."
+            sudo rm -rf /var/www/html/api
             sudo mkdir -p /var/www/html/api
             sudo cp -r ../backend/* /var/www/html/api/
 
             echo "🔐  Setting permissions..."
             sudo chown -R apache:apache /var/www/html
             sudo chmod -R 755 /var/www/html
-
-            # ensure .htaccess exists for React routing
-            if [ ! -f /var/www/html/.htaccess ]; then
-              echo "# React SPA rewrite rules" | sudo tee /var/www/html/.htaccess > /dev/null
-              echo "<IfModule mod_rewrite.c>" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteEngine On" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteBase /" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteCond %{REQUEST_FILENAME} -f [OR]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteCond %{REQUEST_FILENAME} -d" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteRule ^ - [L]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteRule ^ index.html [L]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "</IfModule>" | sudo tee -a /var/www/html/.htaccess > /dev/null
-            fi
 
             echo "🔄  Restarting Apache..."
             sudo systemctl restart httpd
