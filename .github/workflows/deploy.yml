@@ -49,18 +49,18 @@ jobs:
 
             # ensure .htaccess exists for React routing
             if [ ! -f /var/www/html/.htaccess ]; then
-              sudo tee /var/www/html/.htaccess > /dev/null <<'EOT'
-                # React SPA rewrite rules
-                <IfModule mod_rewrite.c>
-                  RewriteEngine On
-                  RewriteBase /
-                  RewriteCond %{REQUEST_FILENAME} -f [OR]
-                  RewriteCond %{REQUEST_FILENAME} -d
-                  RewriteRule ^ - [L]
-                  RewriteRule ^ index.html [L]
-                </IfModule>
-            EOT
-            fi
+                      sudo tee /var/www/html/.htaccess > /dev/null <<'EOT'
+                    # React SPA rewrite rules
+                    <IfModule mod_rewrite.c>
+                      RewriteEngine On
+                      RewriteBase /
+                      RewriteCond %{REQUEST_FILENAME} -f [OR]
+                      RewriteCond %{REQUEST_FILENAME} -d
+                      RewriteRule ^ - [L]
+                      RewriteRule ^ index.html [L]
+                    </IfModule>
+                    EOT
+                    fi
 
             echo "📦  Deploying backend (repo's /backend → server /api)..."
             sudo mkdir -p /var/www/html/api
