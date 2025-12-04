@@ -25,51 +25,47 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
 
-            echo "🛰️  Pulling latest code..."
+            echo "Pulling latest code..."
             cd ~/nestly
             git pull origin main
 
-            echo "🧱  Ensuring Node installed..."
-            if ! command -v npm &> /dev/null
-            then
-              sudo dnf install -y nodejs
-            fi
+            echo "Installing Node 20..."
+            sudo dnf install -y nodejs20
 
-            echo "🧩  Building frontend..."
+            echo "Building frontend..."
             cd frontend
             npm install
             npm run build
 
-            echo "🚀  Deploying frontend (preserving .env and .htaccess)..."
-            # keep .env and .htaccess safe
+            echo "Deploying frontend..."
             sudo find /var/www/html -mindepth 1 ! -name '.env' ! -name '.htaccess' -exec rm -rf {} +
-
-            # copy new frontend build
             sudo cp -r dist/* /var/www/html/
 
-            # ensure .htaccess exists for React routing
-            if [ ! -f /var/www/html/.htaccess ]; then
-              echo "# React SPA rewrite rules" | sudo tee /var/www/html/.htaccess > /dev/null
-              echo "<IfModule mod_rewrite.c>" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteEngine On" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteBase /" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteCond %{REQUEST_FILENAME} -f [OR]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteCond %{REQUEST_FILENAME} -d" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteRule ^ - [L]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "  RewriteRule ^ index.html [L]" | sudo tee -a /var/www/html/.htaccess > /dev/null
-              echo "</IfModule>" | sudo tee -a /var/www/html/.htaccess > /dev/null
-            fi
+            echo "Writing .htaccess..."
+            sudo bash -s << 'EOT'
+cat << 'HTEOF' > /var/www/html/.htaccess
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^ index.html [L]
+</IfModule>
+HTEOF
+EOT
 
-            echo "📦  Deploying backend (repo's /backend → server /api)..."
+            echo "Deploying backend..."
+            sudo rm -rf /var/www/html/api
             sudo mkdir -p /var/www/html/api
             sudo cp -r ../backend/* /var/www/html/api/
 
-            echo "🔐  Setting permissions..."
+            echo "Fixing permissions..."
             sudo chown -R apache:apache /var/www/html
             sudo chmod -R 755 /var/www/html
 
-            echo "🔄  Restarting Apache..."
+            echo "Restarting Apache..."
             sudo systemctl restart httpd
 
-            echo "✅  Deployment complete."
-          EOF
+            echo "Deployment complete!"
+EOF
