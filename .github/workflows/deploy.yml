@@ -1,77 +1,77 @@
 name: Deploy to EC2
 
 on:
-    push:
-        branches:
-            - main
+  push:
+    branches:
+      - main
 
 jobs:
-    deploy:
-        runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-            - name: Set up SSH
-              run: |
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
-                  chmod 600 ~/.ssh/id_ed25519
-                  ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
-            - name: Deploy to EC2
-              run: |
-                  ssh -i ~/.ssh/id_ed25519 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-                    set -e
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
 
-                    echo "🛰️  Pulling latest code..."
-                    cd ~/nestly
-                    git pull origin main
+            echo "🛰️  Pulling latest code..."
+            cd ~/nestly
+            git pull origin main
 
-                    echo "🧱  Ensuring Node installed..."
-                    if ! command -v npm &> /dev/null
-                    then
-                      sudo dnf install -y nodejs
-                    fi
+            echo "🧱  Ensuring Node installed..."
+            if ! command -v npm &> /dev/null
+            then
+              sudo dnf install -y nodejs
+            fi
 
-                    echo "🧩  Building frontend..."
-                    cd frontend
-                    npm install
-                    npm run build
+            echo "🧩  Building frontend..."
+            cd frontend
+            npm install
+            npm run build
 
-                    echo "🚀  Deploying frontend (preserving .env and .htaccess)..."
-                    # keep .env and .htaccess safe
-                    sudo find /var/www/html -mindepth 1 ! -name '.env' ! -name '.htaccess' -exec rm -rf {} +
+            echo "🚀  Deploying frontend (preserving .env and .htaccess)..."
+            # keep .env and .htaccess safe
+            sudo find /var/www/html -mindepth 1 ! -name '.env' ! -name '.htaccess' -exec rm -rf {} +
 
-                    # copy new frontend build
-                    sudo cp -r dist/* /var/www/html/
+            # copy new frontend build
+            sudo cp -r dist/* /var/www/html/
 
-                    # ensure .htaccess exists for React routing
-                    if [ ! -f /var/www/html/.htaccess ]; then
-                      sudo tee /var/www/html/.htaccess > /dev/null <<'EOT'
-                        # React SPA rewrite rules
-                        <IfModule mod_rewrite.c>
-                          RewriteEngine On
-                          RewriteBase /
-                          RewriteCond %{REQUEST_FILENAME} -f [OR]
-                          RewriteCond %{REQUEST_FILENAME} -d
-                          RewriteRule ^ - [L]
-                          RewriteRule ^ index.html [L]
-                        </IfModule>
-                        EOT
-                    fi
+            # ensure .htaccess exists for React routing
+            if [ ! -f /var/www/html/.htaccess ]; then
+              sudo tee /var/www/html/.htaccess > /dev/null <<'EOT'
+                # React SPA rewrite rules
+                <IfModule mod_rewrite.c>
+                  RewriteEngine On
+                  RewriteBase /
+                  RewriteCond %{REQUEST_FILENAME} -f [OR]
+                  RewriteCond %{REQUEST_FILENAME} -d
+                  RewriteRule ^ - [L]
+                  RewriteRule ^ index.html [L]
+                </IfModule>
+            EOT
+            fi
 
-                    echo "📦  Deploying backend (repo's /backend → server /api)..."
-                    sudo mkdir -p /var/www/html/api
-                    sudo cp -r ../backend/* /var/www/html/api/
+            echo "📦  Deploying backend (repo's /backend → server /api)..."
+            sudo mkdir -p /var/www/html/api
+            sudo cp -r ../backend/* /var/www/html/api/
 
-                    echo "🔐  Setting permissions..."
-                    sudo chown -R apache:apache /var/www/html
-                    sudo chmod -R 755 /var/www/html
+            echo "🔐  Setting permissions..."
+            sudo chown -R apache:apache /var/www/html
+            sudo chmod -R 755 /var/www/html
 
-                    echo "🔄  Restarting Apache..."
-                    sudo systemctl restart httpd
+            echo "🔄  Restarting Apache..."
+            sudo systemctl restart httpd
 
-                    echo "✅  Deployment complete."
-                  EOF
+            echo "✅  Deployment complete."
+          EOF
