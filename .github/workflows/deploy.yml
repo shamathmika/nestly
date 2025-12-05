@@ -25,36 +25,36 @@ jobs:
           ssh -i ~/.ssh/id_ed25519 ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} "
             set -e
 
-            echo "🛰️  Pulling latest code..."
+            echo 'Pulling latest code...'
             cd ~/nestly
             git pull origin main
 
-            echo "🧱  Ensuring Node installed..."
+            echo 'Loading NVM and Node 20...'
             export NVM_DIR=\"\$HOME/.nvm\"
             [ -s \"\$NVM_DIR/nvm.sh\" ] && . \"\$NVM_DIR/nvm.sh\"
             nvm install 20
             nvm use 20
 
-            echo "🧩  Building frontend..."
+            echo 'Building frontend...'
             cd frontend
             npm install
             npm run build
 
-            echo "🚀  Deploying frontend..."
+            echo 'Deploying frontend...'
             sudo find /var/www/html -mindepth 1 ! -name '.env' -exec rm -rf {} +
             sudo cp -r dist/* /var/www/html/
 
-            echo "📦  Deploying backend (repo's /backend → server /api)..."
+            echo 'Deploying backend...'
             sudo rm -rf /var/www/html/api
             sudo mkdir -p /var/www/html/api
             sudo cp -r ../backend/* /var/www/html/api/
 
-            echo "🔐  Setting permissions..."
+            echo 'Fixing permissions...'
             sudo chown -R apache:apache /var/www/html
             sudo chmod -R 755 /var/www/html
 
-            echo "🔄  Restarting Apache..."
+            echo 'Restarting Apache...'
             sudo systemctl restart httpd
 
-            echo 'Deployment complete ✔'
+            echo 'Deployment complete'
           "
