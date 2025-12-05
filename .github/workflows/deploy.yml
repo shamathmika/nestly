@@ -43,6 +43,7 @@ jobs:
             echo 'Deploying frontend...'
             sudo find /var/www/html -mindepth 1 ! -name '.env' -exec rm -rf {} +
             sudo cp -r dist/* /var/www/html/
+            sudo cp ~/nestly/frontend/public/.htaccess /var/www/html/.htaccess
 
             echo 'Deploying backend...'
             sudo rm -rf /var/www/html/api

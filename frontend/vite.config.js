@@ -1,17 +1,9 @@
+// frontend/vite.config.js
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
-import fs from "fs";
 
 export default defineConfig({
-  plugins: [
-    react(),
-    {
-      name: "copy-htaccess",
-      closeBundle() {
-        fs.copyFileSync("public/.htaccess", "dist/.htaccess");
-      },
-    },
-  ],
+  plugins: [react()],
 
   publicDir: "public",
 
