@@ -8,7 +8,7 @@ export default defineConfig({
     {
       name: "copy-htaccess",
       closeBundle() {
-        fs.copyFileSync("frontend/public/.htaccess", "dist/.htaccess");
+        fs.copyFileSync("public/.htaccess", "dist/.htaccess");
       },
     },
   ],
