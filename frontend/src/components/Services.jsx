@@ -19,7 +19,9 @@ export default function Services() {
                 <Link to="/services/recent">Last 5 Visited</Link> |{" "}
                 <Link to="/services/top">Most Visited</Link>
             </div>
+
             <h2>Available Rentals</h2>
+
             {listings.length === 0 ? (
                 <p>Loading listings...</p>
             ) : (
@@ -41,7 +43,7 @@ export default function Services() {
                             }}
                         >
                             <img
-                                src={p.img}
+                                src={p.image_url}
                                 alt={p.title}
                                 style={{
                                     width: "100%",
@@ -50,8 +52,13 @@ export default function Services() {
                                     borderRadius: "6px",
                                 }}
                             />
+
                             <h3>{p.title}</h3>
-                            <p style={{ fontSize: "0.9rem" }}>{p.shortDesc}</p>
+
+                            <p style={{ fontSize: "0.9rem" }}>
+                                {p.description?.substring(0, 80)}...
+                            </p>
+
                             <Link to={`/services/${p.id}`}>View Details</Link>
                         </div>
                     ))}

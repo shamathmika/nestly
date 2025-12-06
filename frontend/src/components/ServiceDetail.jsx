@@ -9,11 +9,10 @@ export default function ServiceDetail() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        // Fetch the listing data
         fetch(`${apiBase}/listings/get-listings.php`)
             .then((res) => res.json())
             .then((data) => {
-                const found = data.find((p) => p.id === id);
+                const found = data.find((p) => String(p.id) === String(id));
                 setListing(found || null);
             })
             .catch((err) => {
@@ -21,7 +20,6 @@ export default function ServiceDetail() {
                 setError("Failed to load listing details.");
             });
 
-        // 🔹 Record this visit for cookie tracking
         if (id) {
             fetch(`${apiBase}/listings/set-visit.php?id=${id}`, {
                 credentials: "include",
@@ -37,7 +35,7 @@ export default function ServiceDetail() {
             <h2>{listing.title}</h2>
 
             <img
-                src={listing.img}
+                src={listing.image_url}
                 alt={listing.title}
                 width="600"
                 style={{ borderRadius: "8px", marginBottom: "1rem" }}
@@ -46,16 +44,18 @@ export default function ServiceDetail() {
             <p>
                 <strong>Address:</strong> {listing.address}
             </p>
+
             <p>
                 <strong>Rent:</strong> ${listing.rent} / month
             </p>
+
             <p>
-                <strong>Beds/Baths:</strong> {listing.beds} bd / {listing.baths}{" "}
-                ba
+                <strong>Beds/Baths:</strong> {listing.bedrooms} bd /{" "}
+                {listing.bathrooms} ba
             </p>
 
             <p style={{ maxWidth: "700px", lineHeight: "1.5em" }}>
-                {listing.longDesc}
+                {listing.description}
             </p>
 
             <h4>Amenities</h4>
