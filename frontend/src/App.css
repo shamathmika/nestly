@@ -45,7 +45,14 @@
 .page-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 50px;
   width: 100%;
   box-sizing: border-box;
+  flex: 1; 
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }

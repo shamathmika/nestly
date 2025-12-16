@@ -1,12 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import ListingCard from "./ListingCard";
 import "./../styles/home.css";
 
 const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
 
 export default function Home() {
+  const navigate = useNavigate();
+
+  // search fields
+  const [term, setTerm] = useState("");
+  const [lease, setLease] = useState("");
+  const [termError, setTermError] = useState(false);
+  const [leaseError, setLeaseError] = useState(false);
+
+  // featured listings
   const [featured, setFeatured] = useState([]);
 
+  // community users
+  const [users, setUsers] = useState([]);
+  const carouselRef = useRef(null);
+
+  // load featured listings
   useEffect(() => {
     Promise.all([
       fetch(`${apiBase}/listings/get-listings.php`).then((r) => r.json()),
@@ -17,7 +32,6 @@ export default function Home() {
       .then(async ([allListings, visitCounts]) => {
         const visitIds = Object.keys(visitCounts);
 
-        // 1. CASE: Most visited listings exist
         if (visitIds.length > 0) {
           const sortedByVisits = visitIds
             .sort((a, b) => visitCounts[b] - visitCounts[a])
@@ -33,7 +47,6 @@ export default function Home() {
           }
         }
 
-        // 2. CASE: No visits → fallback to best-rated listings
         let ratingData = [];
 
         for (let listing of allListings) {
@@ -42,75 +55,130 @@ export default function Home() {
           ).then((r) => r.json());
 
           if (reviews.length > 0) {
-            const avgRating =
-              reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
-            ratingData.push({ listing, avgRating });
+            const avg =
+              reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
+
+            ratingData.push({ listing, avg });
           }
         }
 
-        ratingData.sort((a, b) => b.avgRating - a.avgRating);
+        ratingData.sort((a, b) => b.avg - a.avg);
 
         if (ratingData.length > 0) {
-          setFeatured(ratingData.slice(0, 3).map((obj) => obj.listing));
+          setFeatured(ratingData.slice(0, 3).map((x) => x.listing));
           return;
         }
 
-        // 3. CASE: No ratings → fallback to first 3 listings
         setFeatured(allListings.slice(0, 3));
       })
-      .catch((err) => console.error("Error loading featured listings:", err));
+      .catch((err) => console.error("Error loading featured:", err));
   }, []);
+
+  // load users for community carousel
+  useEffect(() => {
+    fetch(`${apiBase}/get-community-users.php`)
+      .then((r) => r.json())
+      .then((data) => setUsers(data))
+      .catch((err) => console.error("Error loading users:", err));
+  }, []);
+
+  // auto-scroll carousel
+  useEffect(() => {
+    const el = carouselRef.current;
+    if (!el) return;
+
+    const scrollAmount = 1; // px
+    const interval = setInterval(() => {
+      el.scrollLeft += scrollAmount;
+
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth) {
+        el.scrollLeft = 0; // loop to start
+      }
+    }, 30);
+
+    return () => clearInterval(interval);
+  }, [users]);
+
+  // SEARCH HANDLER
+  const handleSearch = () => {
+    let hasError = false;
+
+    if (!term) {
+      setTermError(true);
+      hasError = true;
+    }
+    if (!lease) {
+      setLeaseError(true);
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    navigate(`/services?term=${term}&lease=${lease}`);
+  };
 
   return (
     <main className="home">
-      {/* ========================================= */}
-      {/* HERO SECTION — DO NOT TOUCH (AS REQUESTED) */}
-      {/* ========================================= */}
+      {/* ================= HERO ================= */}
       <section className="hero">
         <div className="hero-content">
           <div className="hero-card">
             <h1 className="hero-title">find your home away from home</h1>
 
             <div className="hero-form">
-              <label>
+
+              <label className={termError ? "error-field" : ""}>
                 Term
-                <select defaultValue="">
+                <select
+                  value={term}
+                  onChange={(e) => {
+                    setTerm(e.target.value);
+                    setTermError(false);
+                  }}
+                >
                   <option value="" disabled>Select term</option>
                   <option value="fall-2025">Fall 2025</option>
                   <option value="spring-2026">Spring 2026</option>
-                  <option value="summer-2026">Summer 2026</option>
+                  <option value="summer-2025">Summer 2025</option>
+                  <option value="fall-2026">Fall 2026</option>
                 </select>
               </label>
 
-              <label>
+              <label className={leaseError ? "error-field" : ""}>
                 Lease length
-                <select defaultValue="">
+                <select
+                  value={lease}
+                  onChange={(e) => {
+                    setLease(e.target.value);
+                    setLeaseError(false);
+                  }}
+                >
                   <option value="" disabled>Select length</option>
-                  <option value="6-months">6 months</option>
-                  <option value="12-months">12 months</option>
+                  <option value="3">3 months</option>
+                  <option value="6">6 months</option>
+                  <option value="12">12 months</option>
+                  <option value="24">24 months</option>
                 </select>
               </label>
 
-              <button>Search</button>
+              <button onClick={handleSearch}>Search</button>
+
             </div>
           </div>
         </div>
 
         <div className="hero-image-container">
           <img
-            src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2000"
-            alt="Home background"
+            src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?auto=format&fit=crop&w=2000"
+            alt=""
             className="hero-bg-img"
           />
         </div>
       </section>
 
-      {/* ========================================= */}
-      {/* FEATURED LISTINGS — UPDATED ONLY */}
-      {/* ========================================= */}
+      {/* ================= FEATURED LISTINGS ================= */}
       <section className="section section--featured">
         <h2>Featured Listings</h2>
-
         <div className="cards">
           {featured.length === 0 ? (
             <p>No featured listings available.</p>
@@ -122,31 +190,32 @@ export default function Home() {
         </div>
       </section>
 
-      {/* NEWS SECTION — unchanged */}
+      {/* ================= NEWS ================= */}
       <section className="section section--news">
         <h2>Latest News</h2>
         <div className="cards">
-          <div className="card">News 1</div>
-          <div className="card">News 2</div>
-          <div className="card">News 3</div>
+          <div className="card">Nestly launches roommate matching in 3 new cities.</div>
+          <div className="card">New verified listings added near San Jose State University.</div>
+          <div className="card">Now offering multilingual support for international students.</div>
         </div>
       </section>
 
-      {/* USERS SECTION — unchanged */}
+      {/* ================= COMMUNITY USERS ================= */}
       <section className="section section--users">
         <h2>Meet Our Community</h2>
-        <div className="user-carousel">
-          <div className="user-card">Mary Smith</div>
-          <div className="user-card">John Wang</div>
-          <div className="user-card">Alex Bington</div>
-          <div className="user-card">Sophia Ray</div>
-          <div className="user-card">Emma Park</div>
+
+        <div className="user-carousel" ref={carouselRef}>
+          {users.length === 0 ? (
+            <p>No users available.</p>
+          ) : (
+            users.map((u) => (
+              <div className="user-card" key={u.id}>
+                {u.name}
+              </div>
+            ))
+          )}
         </div>
       </section>
-
-      <footer className="footer">
-        <p>© {new Date().getFullYear()} Nestly • Your home away from home.</p>
-      </footer>
     </main>
   );
 }

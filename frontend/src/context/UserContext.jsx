@@ -1,6 +1,19 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
-const UserContext = createContext();
+// Provide SAFE DEFAULT VALUES so destructuring never breaks
+const UserContext = createContext({
+  user: null,
+  login: () => {},
+  signup: () => {},
+  logout: () => {},
+  updateProfileDetails: () => {},
+  isAuthModalOpen: false,
+  openAuthModal: () => {},
+  closeAuthModal: () => {},
+  isAdditionalModalOpen: false,
+  openAdditionalModal: () => {},
+  closeAdditionalModal: () => {},
+});
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null);
@@ -29,7 +42,6 @@ export function UserProvider({ children }) {
     const openAdditionalModal = () => setAdditionalModalOpen(true);
     const closeAdditionalModal = () => setAdditionalModalOpen(false);
 
-    // LOGIN
     const login = async (email, password) => {
         const res = await fetch(`${apiBase}/auth/login.php`, {
             method: "POST",
@@ -46,7 +58,6 @@ export function UserProvider({ children }) {
         return { success: true };
     };
 
-    // SIGNUP
     const signup = async (name, email, password) => {
         const res = await fetch(`${apiBase}/auth/signup.php`, {
             method: "POST",
@@ -65,7 +76,6 @@ export function UserProvider({ children }) {
         return { success: true };
     };
 
-    // UPDATE ROLE + INTERESTS
     const updateProfileDetails = async (role, interests) => {
         const res = await fetch(`${apiBase}/users/update-profile.php`, {
             method: "POST",
@@ -83,7 +93,6 @@ export function UserProvider({ children }) {
         return { success: true };
     };
 
-    // LOGOUT
     const logout = async () => {
         await fetch(`${apiBase}/auth/logout.php`, {
             method: "POST",
