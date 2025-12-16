@@ -1,0 +1,140 @@
+/* Blurred + dimmed overlay */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 4000;
+}
+
+/* Modal box */
+.auth-modal {
+  width: 420px;
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: 2.2rem;
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center form elements */
+}
+
+/* Close button */
+.auth-close {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  font-size: 22px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  opacity: 0.9;
+}
+.auth-close:hover {
+  opacity: 1;
+  color: var(--color-text);
+}
+
+/* Ensures all form elements match width */
+.auth-field,
+.auth-modal input,
+.auth-submit,
+.auth-google {
+  width: 100%;
+  max-width: 330px; /* unified width */
+}
+
+/* Inputs */
+.auth-modal input {
+  padding: 0.85rem;
+  margin-top: 0.8rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 0.95rem;
+}
+
+/* Main button */
+.auth-submit {
+  margin-top: 1.2rem;
+  padding: 0.9rem;
+  border-radius: var(--radius-md);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  text-align: center;
+}
+.auth-submit:hover {
+  background: var(--btn-bg-hover);
+}
+
+/* Divider */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.4rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  width: 100%;
+  max-width: 330px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+  margin: 0 0.75rem;
+}
+
+/* Google button */
+.auth-google {
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--color-text);
+  text-align: center;
+}
+.auth-google:hover {
+  background: var(--color-bg);
+}
+
+/* Error message */
+.auth-error {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  max-width: 330px;
+  text-align: left;
+}
+
+/* Switch between login/signup */
+.auth-switch {
+  margin-top: 1.2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  width: 100%;
+  max-width: 330px;
+}
+
+.auth-switch span {
+  color: var(--link);
+  cursor: pointer;
+}
+.auth-switch span:hover {
+  color: var(--link-hover);
+  text-decoration: underline;
+}

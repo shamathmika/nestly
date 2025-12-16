@@ -5,10 +5,8 @@ const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
 
 export default function RecentServices() {
     const [listings, setListings] = useState([]);
-    const [recentIds, setRecentIds] = useState([]);
 
     useEffect(() => {
-        // Load both recent IDs and listings data
         Promise.all([
             fetch(`${apiBase}/listings/get-recent.php`, {
                 credentials: "include",
@@ -16,13 +14,28 @@ export default function RecentServices() {
             fetch(`${apiBase}/listings/get-listings.php`).then((r) => r.json()),
         ])
             .then(([ids, allListings]) => {
-                const filtered = allListings.filter((p) => ids.includes(p.id));
-                // keep order of cookie (recent first)
-                const ordered = ids
-                    .map((id) => filtered.find((p) => p.id === id))
+                if (!Array.isArray(ids)) {
+                    console.error("Unexpected recent IDs payload:", ids);
+                    setListings([]);
+                    return;
+                }
+
+                // Normalize all IDs to strings
+                const idStrings = ids.map((id) => String(id));
+
+                // Keep only listings whose id is in recent list
+                const filtered = allListings.filter((p) =>
+                    idStrings.includes(String(p.id))
+                );
+
+                // Preserve recent order (most recent first)
+                const ordered = idStrings
+                    .map((idStr) =>
+                        filtered.find((p) => String(p.id) === idStr)
+                    )
                     .filter(Boolean);
+
                 setListings(ordered);
-                setRecentIds(ids);
             })
             .catch((err) =>
                 console.error("Error loading recent listings:", err)
@@ -55,7 +68,7 @@ export default function RecentServices() {
                             }}
                         >
                             <img
-                                src={p.img}
+                                src={p.image_url}
                                 alt={p.title}
                                 style={{
                                     width: "100%",
@@ -65,7 +78,9 @@ export default function RecentServices() {
                                 }}
                             />
                             <h3>{p.title}</h3>
-                            <p style={{ fontSize: "0.9rem" }}>{p.shortDesc}</p>
+                            <p style={{ fontSize: "0.9rem" }}>
+                                {p.description?.substring(0, 80)}...
+                            </p>
                             <Link to={`/services/${p.id}`}>View Details</Link>
                         </div>
                     ))}

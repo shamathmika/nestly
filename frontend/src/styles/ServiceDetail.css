@@ -1,0 +1,211 @@
+/* WRAPPER */
+.sd-wrapper {
+    margin-bottom: 2rem;
+}
+
+/* IMAGE */
+.sd-image {
+    width: 600px;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+/* DESCRIPTION */
+.sd-description {
+    max-width: 700px;
+    line-height: 1.6em;
+}
+
+/* DIVIDER */
+.sd-divider {
+    margin: 2rem 0;
+    border: none;
+    border-top: 1px solid var(--color-border);
+}
+
+/* ---------------------------------------------
+   AVERAGE RATING (stars under title)
+---------------------------------------------- */
+
+.avg-rating-container {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.6rem;
+}
+
+.avg-stars {
+    font-size: 22px;
+    color: var(--color-brand);
+}
+
+.avg-rating-text {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+/* ---------------------------------------------
+   REVIEW CARDS
+---------------------------------------------- */
+
+.review-box {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Header row: name + (date + edit/delete if mine) */
+.review-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-header-left {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Date */
+.review-date {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin-top: 2px;
+}
+
+/* Edit + Delete buttons */
+.review-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.review-edit-link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-brand);
+    font-size: 0.9rem;
+}
+.review-edit-link:hover {
+    text-decoration: underline;
+}
+
+/* TRASH ICON DELETE */
+.review-delete-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    transition: color 0.2s ease;
+    display: flex;
+}
+
+.review-delete-btn:hover {
+    color: #cc0000;
+}
+
+/* Stars (under the name) */
+.review-stars-inline {
+    margin: 0.4rem 0 0.6rem 0;
+    font-size: 20px;
+    color: var(--color-brand);
+}
+
+/* Comment text */
+.review-comment {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-text);
+}
+
+/* ---------------------------------------------
+   REVIEW FORM (write/edit)
+---------------------------------------------- */
+
+.review-form {
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+}
+
+.rating-stars {
+    font-size: 26px;
+}
+
+.star {
+    cursor: pointer;
+    margin-right: 4px;
+    color: var(--color-border);
+    transition: color 0.2s ease;
+}
+.star.selected {
+    color: var(--color-brand);
+}
+
+.review-textarea {
+    width: 100%;
+    max-width: 600px;
+    height: 120px;
+    padding: 0.7rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    resize: vertical;
+}
+
+/* Buttons under the textarea */
+.review-submit-btn {
+    background: var(--btn-bg);
+    color: var(--btn-fg);
+    padding: 0.6rem 1.3rem;
+    border-radius: var(--radius-md);
+    border: none;
+    cursor: pointer;
+}
+.review-submit-btn:hover {
+    background: var(--btn-bg-hover);
+}
+
+.review-cancel-btn {
+    background: none;
+    border: 1px solid var(--color-border);
+    padding: 0.5rem 1.1rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    color: var(--color-text-muted);
+}
+.review-cancel-btn:hover {
+    background: var(--color-bg);
+}
+
+/* Login hint */
+.sd-login-hint {
+    margin-top: 1.2rem;
+    color: var(--color-text-muted);
+}
+
+.sd-login-link {
+    cursor: pointer;
+    color: var(--color-brand);
+}
+.sd-login-link:hover {
+    text-decoration: underline;
+}
+
+/* Bottom links */
+.sd-links {
+    margin-top: 1.5rem;
+}
+
+.avg-rating-clickable {
+    cursor: pointer;
+}
+.avg-rating-clickable:hover {
+    opacity: 0.8;
+}

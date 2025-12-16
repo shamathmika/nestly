@@ -15,16 +15,39 @@ export default function TopServices() {
             fetch(`${apiBase}/listings/get-listings.php`).then((r) => r.json()),
         ])
             .then(([counts, allListings]) => {
+                if (!counts || typeof counts !== "object") {
+                    console.error("Unexpected top counts payload:", counts);
+                    setTopData({});
+                    setListings([]);
+                    return;
+                }
+
                 setTopData(counts);
-                const ids = Object.keys(counts);
-                const filtered = allListings.filter((p) => ids.includes(p.id));
-                // Order by descending view count
-                const ordered = ids
-                    .map((id) => filtered.find((p) => p.id === id))
+
+                // keys in counts are likely strings ("1", "2", ...)
+                const idStrings = Object.keys(counts);
+
+                // filter listings whose id is in counts
+                const filtered = allListings.filter((p) =>
+                    idStrings.includes(String(p.id))
+                );
+
+                // Order ids by descending view count
+                const orderedIds = [...idStrings].sort(
+                    (a, b) => (counts[b] ?? 0) - (counts[a] ?? 0)
+                );
+
+                const orderedListings = orderedIds
+                    .map((idStr) =>
+                        filtered.find((p) => String(p.id) === idStr)
+                    )
                     .filter(Boolean);
-                setListings(ordered);
+
+                setListings(orderedListings);
             })
-            .catch((err) => console.error("Error loading top listings:", err));
+            .catch((err) =>
+                console.error("Error loading top listings:", err)
+            );
     }, []);
 
     return (
@@ -53,7 +76,7 @@ export default function TopServices() {
                             }}
                         >
                             <img
-                                src={p.img}
+                                src={p.image_url}
                                 alt={p.title}
                                 style={{
                                     width: "100%",
@@ -63,11 +86,15 @@ export default function TopServices() {
                                 }}
                             />
                             <h3>{p.title}</h3>
-                            <p style={{ fontSize: "0.9rem" }}>{p.shortDesc}</p>
-                            <p style={{ fontSize: "0.85rem", color: "#555" }}>
-                                {topData[p.id]} visit
-                                {topData[p.id] > 1 ? "s" : ""}
+                            <p style={{ fontSize: "0.9rem" }}>
+                                {p.description?.substring(0, 80)}...
                             </p>
+
+                            <p style={{ fontSize: "0.85rem", color: "#555" }}>
+                                {topData[String(p.id)] ?? 0} visit
+                                {(topData[String(p.id)] ?? 0) > 1 ? "s" : ""}
+                            </p>
+
                             <Link to={`/services/${p.id}`}>View Details</Link>
                         </div>
                     ))}

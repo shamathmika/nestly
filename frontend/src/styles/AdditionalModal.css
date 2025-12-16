@@ -1,0 +1,55 @@
+.additional-modal {
+  width: 440px;
+  background: var(--color-surface);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  color: var(--color-text);
+}
+
+.additional-modal label {
+  margin-top: 1rem;
+  display: block;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+/* Dropdown */
+.additional-modal select {
+  margin-top: 0.4rem;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Interest tags */
+.interest-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.7rem;
+}
+
+.interest-item {
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-md);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.interest-item.selected {
+  background: var(--color-brand);
+  border-color: var(--color-brand);
+  color: var(--color-brand-contrast);
+}
+
+/* Save button */
+.additional-modal .auth-submit {
+  margin-top: 1.6rem;
+}
