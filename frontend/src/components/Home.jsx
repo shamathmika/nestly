@@ -1,8 +1,71 @@
+import { useEffect, useState } from "react";
+import ListingCard from "./ListingCard";
 import "./../styles/home.css";
 
+const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
+
 export default function Home() {
+  const [featured, setFeatured] = useState([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${apiBase}/listings/get-listings.php`).then((r) => r.json()),
+      fetch(`${apiBase}/listings/get-top.php`, { credentials: "include" }).then(
+        (r) => r.json()
+      ),
+    ])
+      .then(async ([allListings, visitCounts]) => {
+        const visitIds = Object.keys(visitCounts);
+
+        // 1. CASE: Most visited listings exist
+        if (visitIds.length > 0) {
+          const sortedByVisits = visitIds
+            .sort((a, b) => visitCounts[b] - visitCounts[a])
+            .map((id) =>
+              allListings.find((l) => String(l.id) === String(id))
+            )
+            .filter(Boolean)
+            .slice(0, 3);
+
+          if (sortedByVisits.length > 0) {
+            setFeatured(sortedByVisits);
+            return;
+          }
+        }
+
+        // 2. CASE: No visits → fallback to best-rated listings
+        let ratingData = [];
+
+        for (let listing of allListings) {
+          const reviews = await fetch(
+            `${apiBase}/reviews/get-reviews.php?rental_id=${listing.id}`
+          ).then((r) => r.json());
+
+          if (reviews.length > 0) {
+            const avgRating =
+              reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length;
+            ratingData.push({ listing, avgRating });
+          }
+        }
+
+        ratingData.sort((a, b) => b.avgRating - a.avgRating);
+
+        if (ratingData.length > 0) {
+          setFeatured(ratingData.slice(0, 3).map((obj) => obj.listing));
+          return;
+        }
+
+        // 3. CASE: No ratings → fallback to first 3 listings
+        setFeatured(allListings.slice(0, 3));
+      })
+      .catch((err) => console.error("Error loading featured listings:", err));
+  }, []);
+
   return (
     <main className="home">
+      {/* ========================================= */}
+      {/* HERO SECTION — DO NOT TOUCH (AS REQUESTED) */}
+      {/* ========================================= */}
       <section className="hero">
         <div className="hero-content">
           <div className="hero-card">
@@ -34,24 +97,32 @@ export default function Home() {
         </div>
 
         <div className="hero-image-container">
-          <img 
-            src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2000" 
-            alt="Home background" 
+          <img
+            src="https://images.unsplash.com/photo-1665686377065-08ba896d16fd?ixlib=rb-4.1.0&auto=format&fit=crop&q=80&w=2000"
+            alt="Home background"
             className="hero-bg-img"
           />
         </div>
       </section>
 
-
+      {/* ========================================= */}
+      {/* FEATURED LISTINGS — UPDATED ONLY */}
+      {/* ========================================= */}
       <section className="section section--featured">
         <h2>Featured Listings</h2>
+
         <div className="cards">
-          <div className="card">Listing 1</div>
-          <div className="card">Listing 2</div>
-          <div className="card">Listing 3</div>
+          {featured.length === 0 ? (
+            <p>No featured listings available.</p>
+          ) : (
+            featured.map((listing) => (
+              <ListingCard key={listing.id} listing={listing} />
+            ))
+          )}
         </div>
       </section>
 
+      {/* NEWS SECTION — unchanged */}
       <section className="section section--news">
         <h2>Latest News</h2>
         <div className="cards">
@@ -61,6 +132,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* USERS SECTION — unchanged */}
       <section className="section section--users">
         <h2>Meet Our Community</h2>
         <div className="user-carousel">

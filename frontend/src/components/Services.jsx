@@ -1,69 +1,34 @@
 import { useEffect, useState } from "react";
+import ListingCard from "./ListingCard";
 import { Link } from "react-router-dom";
+import "./../styles/home.css";
 
 const apiBase = import.meta.env.VITE_API_BASE ?? "/api";
 
 export default function Services() {
-    const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState([]);
 
-    useEffect(() => {
-        fetch(`${apiBase}/listings/get-listings.php`)
-            .then((res) => res.json())
-            .then((data) => setListings(data))
-            .catch((err) => console.error("Error loading listings:", err));
-    }, []);
+  useEffect(() => {
+    fetch(`${apiBase}/listings/get-listings.php`)
+      .then((res) => res.json())
+      .then((data) => setListings(data))
+      .catch((err) => console.error("Error loading listings:", err));
+  }, []);
 
-    return (
-        <div>
-            <div style={{ marginTop: "2rem" }}>
-                <Link to="/services/recent">Last 5 Visited</Link> |{" "}
-                <Link to="/services/top">Most Visited</Link>
-            </div>
+  return (
+    <div>
+      <div style={{ marginTop: "2rem" }}>
+        <Link to="/services/recent">Last 5 Visited</Link> |{" "}
+        <Link to="/services/top">Most Visited</Link>
+      </div>
 
-            <h2>Available Rentals</h2>
+      <h2>Available Rentals</h2>
 
-            {listings.length === 0 ? (
-                <p>Loading listings...</p>
-            ) : (
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(280px, 1fr))",
-                        gap: "1rem",
-                    }}
-                >
-                    {listings.map((p) => (
-                        <div
-                            key={p.id}
-                            style={{
-                                border: "1px solid #ddd",
-                                borderRadius: "8px",
-                                padding: "1rem",
-                            }}
-                        >
-                            <img
-                                src={p.image_url}
-                                alt={p.title}
-                                style={{
-                                    width: "100%",
-                                    height: "180px",
-                                    objectFit: "cover",
-                                    borderRadius: "6px",
-                                }}
-                            />
-
-                            <h3>{p.title}</h3>
-
-                            <p style={{ fontSize: "0.9rem" }}>
-                                {p.description?.substring(0, 80)}...
-                            </p>
-
-                            <Link to={`/services/${p.id}`}>View Details</Link>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </div>
-    );
+      <div className="cards">
+        {listings.map((p) => (
+          <ListingCard key={p.id} listing={p} />
+        ))}
+      </div>
+    </div>
+  );
 }
