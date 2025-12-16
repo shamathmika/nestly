@@ -1,4 +1,4 @@
-# [Nestly|shamathmikacmpe272.app]
+# Nestly
 
 **Nestly** is a LAMP stack-powered web application designed to help students find affordable housing and compatible roommates near their universities or colleges.
 
