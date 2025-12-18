@@ -2,7 +2,7 @@
 require_once __DIR__ . '/../cors.php';
 session_start();
 require_once __DIR__ . '/../config/db.php';
-require_once __DIR__ . '/update_avg_rating.php'; // NEW
+require_once __DIR__ . '/update-avg-rating.php';
 
 header("Content-Type: application/json");
 
