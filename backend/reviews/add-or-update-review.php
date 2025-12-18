@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../cors.php';
 session_start();
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/update_avg_rating.php'; // NEW
 
 header("Content-Type: application/json");
 
@@ -22,19 +23,22 @@ if (!$rentalId || !$rating) {
     exit;
 }
 
-// Does a review already exist?
+// Check if user already reviewed this rental
 $stmt = $pdo->prepare("SELECT id FROM reviews WHERE rental_id = ? AND user_id = ?");
 $stmt->execute([$rentalId, $userId]);
 $existing = $stmt->fetch();
 
 if ($existing) {
-    // Update
+    // Update existing review
     $stmt = $pdo->prepare("
         UPDATE reviews
         SET rating = ?, comment = ?, created_at = NOW()
         WHERE id = ?
     ");
     $stmt->execute([$rating, $comment, $existing['id']]);
+
+    // Update avg rating
+    updateAverageRating($rentalId, $pdo);
 
     echo json_encode(["success" => true, "updated" => true]);
     exit;
@@ -47,6 +51,10 @@ if ($existing) {
     ");
     $stmt->execute([$rentalId, $userId, $rating, $comment]);
 
+    // Update avg rating
+    updateAverageRating($rentalId, $pdo);
+
     echo json_encode(["success" => true, "created" => true]);
     exit;
 }
+?>

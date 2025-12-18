@@ -2,6 +2,7 @@
 require_once __DIR__ . '/../cors.php';
 session_start();
 require_once __DIR__ . '/../config/db.php';
+require_once __DIR__ . '/update_avg_rating.php'; // NEW
 
 header("Content-Type: application/json");
 
@@ -20,8 +21,13 @@ if (!$rentalId) {
     exit;
 }
 
+// Delete review
 $stmt = $pdo->prepare("DELETE FROM reviews WHERE rental_id = ? AND user_id = ?");
 $stmt->execute([$rentalId, $userId]);
 
+// Recalculate avg_rating
+updateAverageRating($rentalId, $pdo);
+
 echo json_encode(["success" => true]);
 exit;
+?>
